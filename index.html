@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f6ed">
+  <meta name="description" content="Explore the nutrients and everyday health benefits of fruits and vegetables with Fresh Facts.">
+  <title>Fresh Facts — Good things grow here</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#home" aria-label="Fresh Facts home">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span>fresh<span class="brand-accent">facts</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#home">Home</a><a href="#browse">Browse</a><a href="#about">About</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode"><span aria-hidden="true">☾</span></button>
+        <a class="favorites-link" href="#browse" id="favorites-toggle" aria-pressed="false"><span aria-hidden="true">♡</span> Favorites <span class="favorite-count" id="favorite-count">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section-wrap" id="home" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> A little goodness, every day</p>
+        <h1 id="hero-title">Good things<br>grow <span>here.</span></h1>
+        <p class="hero-description">A fresh look at the fruits and veggies that help you feel your best.</p>
+        <a class="button button-primary hero-cta" href="#browse">Explore the produce <span aria-hidden="true">→</span></a>
+        <div class="hero-note"><span aria-hidden="true">✦</span> Everyday ingredients. Feel-good facts.</div>
+      </div>
+      <div class="hero-art" aria-label="Illustration of colorful fresh produce" role="img">
+        <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+        <span class="produce produce-apple" aria-hidden="true">🍎</span>
+        <span class="produce produce-avocado" aria-hidden="true">🥑</span>
+        <span class="produce produce-carrot" aria-hidden="true">🥕</span>
+        <span class="produce produce-orange" aria-hidden="true">🍊</span>
+        <span class="produce produce-leaf" aria-hidden="true">🥬</span>
+        <span class="produce produce-blueberry" aria-hidden="true">🫐</span>
+        <div class="hero-sticker"><span>Eat<br>the<br>rainbow</span><span class="sticker-star" aria-hidden="true">✳</span></div>
+      </div>
+      <div class="hero-search">
+        <label for="search-input">Find your feel-good food</label>
+        <div class="search-control"><span class="search-icon" aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Try “eyes” or “spinach”..." autocomplete="off"><kbd>⌘ K</kbd></div>
+        <p>Search produce, nutrients, or benefits</p>
+      </div>
+    </section>
+
+    <section class="browse-section section-wrap" id="browse" aria-labelledby="browse-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">The good stuff</p><h2 id="browse-title">Meet your <span>produce</span></h2></div>
+        <p class="section-intro">Small, colorful choices can make a lovely difference.</p>
+      </div>
+      <div class="browse-toolbar">
+        <div class="filter-group" role="group" aria-label="Filter produce">
+          <button class="filter-button active" type="button" data-filter-type="category" data-filter-value="all" aria-pressed="true">All <span class="filter-total" id="all-count">22</span></button>
+          <button class="filter-button" type="button" data-filter-type="category" data-filter-value="fruit" aria-pressed="false">Fruits</button>
+          <button class="filter-button" type="button" data-filter-type="category" data-filter-value="vegetable" aria-pressed="false">Vegetables</button>
+        </div>
+        <div class="toolbar-right">
+          <label class="sort-control" for="sort-select"><span aria-hidden="true">↕</span> Sort
+            <select id="sort-select" aria-label="Sort produce"><option value="featured">Featured</option><option value="az">A to Z</option></select>
+          </label>
+          <span class="result-count" id="result-count" aria-live="polite"></span>
+        </div>
+      </div>
+      <div class="benefit-filters" role="group" aria-label="Filter by benefit">
+        <span>I'm looking for</span>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Heart" aria-pressed="false">♡ Heart</button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Eyes" aria-pressed="false">◉ Eyes</button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Skin" aria-pressed="false">✧ Skin</button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Immunity" aria-pressed="false">✚ Immunity</button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Bones" aria-pressed="false">⌁ Bones</button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Digestion" aria-pressed="false">↗ Digestion</button>
+      </div>
+      <div class="produce-grid" id="produce-grid" aria-live="polite"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <span aria-hidden="true">🧺</span><h3>No produce found just yet</h3>
+        <p>Try another search or clear your filters.</p>
+        <button class="button button-secondary" id="clear-filters" type="button">Show all produce</button>
+      </div>
+    </section>
+
+    <section class="about-section" id="about" aria-labelledby="about-title">
+      <div class="about-inner section-wrap">
+        <div class="about-badge" aria-hidden="true"><span>✳</span><small>FRESH<br>FACTS</small></div>
+        <div class="about-copy">
+          <p class="eyebrow">A note from our little garden</p>
+          <h2 id="about-title">Good food info,<br><span>without the fuss.</span></h2>
+          <p>Fresh Facts makes it easier to get curious about what’s on your plate. Explore everyday produce, learn about its nutrients, and find simple ways to enjoy more variety.</p>
+          <p class="medical-note"><strong>A little important note:</strong> This site shares general educational information, not medical advice. Nutrition needs vary from person to person. Talk with a qualified healthcare professional about personal health concerns.</p>
+        </div>
+        <div class="about-doodle" aria-hidden="true">🍋<span>🥦</span>🍓</div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner section-wrap">
+      <a class="brand footer-brand" href="#home"><span class="brand-mark" aria-hidden="true">✳</span><span>fresh<span class="brand-accent">facts</span></span></a>
+      <p>Made for curious eaters, everywhere.</p>
+      <p class="footer-disclaimer">General information only—not medical advice. Sources: USDA FoodData Central and public nutrition guidance from the NIH Office of Dietary Supplements. Always check with a healthcare professional for advice specific to you.</p>
+      <a class="back-to-top" href="#home">Back to top ↑</a>
+    </div>
+  </footer>
+  <dialog class="details-dialog" id="details-dialog" aria-labelledby="dialog-title">
+    <button class="dialog-close" id="dialog-close" type="button" aria-label="Close details">×</button>
+    <div class="dialog-content" id="dialog-content"></div>
+  </dialog>
+</body>
+</html>
