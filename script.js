@@ -1,6 +1,7 @@
 // Keep the active filters together so all controls can be combined predictably.
-const state = { category: "all", benefit: "", favoritesOnly: false, search: "" };
+const state = { category: "all", benefit: "", favoritesOnly: false, search: "", seasonMonth: null };
 let selectedGoal = "";
+let selectedMonth = new Date().getMonth();
 const goalDefinitions = {
   Eyes: { translationKey: "goalEyes", keywords: ["eye", "vision", "beta-carotene", "vitamin a", "lutein"] },
   Heart: { translationKey: "goalHeart", keywords: ["heart", "unsaturated fat"] },
@@ -14,6 +15,10 @@ const themeStorageKey = "fresh-facts-theme";
 const languageStorageKey = "fresh-facts-language";
 const cardStyleStorageKey = "fresh-facts-card-style";
 const calmModeStorageKey = "fresh-facts-calm-mode";
+const journeyStorageKey = "fresh-facts-seasonal-journey";
+// Three different food details open one more month.
+const foodsPerJourneyUnlock = 3;
+const journeyStartMonth = new Date().getMonth();
 const warnedMissingTranslations = new Set();
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let revealObserver = null;
@@ -25,9 +30,10 @@ const translations = {
     languageLabel: "Choose language", cardStyleLabel: "Card style", stylePastel: "Pastel",
     styleTropical: "Tropical", styleMinimal: "Minimal",
     themeDarkLabel: "Switch to dark mode", themeLightLabel: "Switch to light mode",
-    themeTitle: "Change color mode", calmMode: "Calm mode", calmModeOn: "On", calmModeOff: "Off",
+    themeTitle: "Change color mode", themeDarkShortLabel: "Dark", themeLightShortLabel: "Light",
+    calmMode: "Calm mode", calmModeOn: "On", calmModeOff: "Off",
     favoritesLabel: "Favorites", navBrowse: "Browse",
-    searchOpen: "Open search", searchClose: "Close",
+    searchOpen: "Open search", searchClose: "Close", searchButtonLabel: "Search",
     searchLabel: "Search fruits and vegetables",
     searchPlaceholder: "Try “spinach” or “పాలకూర”...",
     searchHint: "Search by name, nutrient, or benefit",
@@ -37,6 +43,58 @@ const translations = {
     greetingMorning: "Good morning! Here's to a fresh start.",
     greetingAfternoon: "Good afternoon! Find a little fresh goodness.",
     greetingEvening: "Good evening! Take a moment for something fresh.",
+    seasonHeroEyebrow: "Your Year of Fresh Food",
+    seasonHeroTitle: "Take a fresh journey through the seasons",
+    seasonHeroDescription: "Follow the months, discover seasonal foods, and find simple ways to enjoy them.",
+    seasonWheelEyebrow: "A path through the year",
+    journeyTitle: "Choose an open month",
+    journeyRouteAria: "Seasonal journey through the months",
+    seasonLegendAria: "Seasons",
+    seasonWinter: "Winter", seasonSpring: "Spring", seasonSummer: "Summer",
+    seasonMonsoon: "Monsoon", seasonAutumn: "Autumn",
+    seasonMonthEyebrow: "Month explorer",
+    seasonFoodsTitle: "Fresh picks for {month}",
+    seasonBenefitFallback: "A colorful food to add variety to your meals.",
+    previousMonth: "Previous month", nextMonth: "Next month",
+    seasonEmpty: "No foods are listed for this month yet.",
+    seasonRegionNote: "Seasons vary by region. Foods with broad season notes are shown as flexible picks; ask what is fresh near you.",
+    seasonItemsNote: "Here are up to six picks. Browse the full month list below.",
+    seasonFallbackNote: "No exact month notes are available yet. These general foods are not confirmed as in season.",
+    seasonTipHeading: "Why eat in season?",
+    seasonTipFresh: "Foods in season are often fresher because they travel less.",
+    seasonTipAffordable: "They can cost less when local supplies are plentiful.",
+    seasonTipTastier: "Ripe, in-season produce can taste especially good.",
+    seasonBrowseButton: "See all foods for this month",
+    seasonFilterLabel: "Showing foods for {month}; broad season notes may also appear.",
+    seasonFilterFallback: "No exact season notes for {month}; showing general foods instead.",
+    clearSeasonFilter: "Clear month",
+    journeyProgressLabel: "Journey progress",
+    journeyDiscovered: "Foods discovered: {count} of {total}",
+    journeyNextUnlock: "View {count} more different food details to open the next month.",
+    journeyAllOpen: "All 12 months are open. Enjoy exploring!",
+    journeySkipAhead: "Skip ahead — open all months",
+    journeyStartAgain: "Start again",
+    journeyLocked: "Locked",
+    journeyOpen: "Open",
+    journeyCurrent: "Current month",
+    journeyStopAria: "{month}, {season}. {status}",
+    journeyLockedStopAria: "{month} is locked. View {count} more different food details to open the next month.",
+    journeyUnlockMessage: "Lovely! {month} is open. Keep exploring!",
+    journeySkipMessage: "All 12 months are open. Explore at your own pace.",
+    journeyResetMessage: "Journey restarted. {month} and the next month are open.",
+    foodDayEyebrow: "A fresh pick for today",
+    foodDayTitle: "Food of the day",
+    foodDayIntro: "One seasonal food to enjoy and learn about.",
+    foodDayMonth: "A pick for {month}",
+    seeDetails: "See details",
+    shortcutsEyebrow: "Start here",
+    shortcutsTitle: "Where would you like to go?",
+    shortcutsIntro: "Pick one place to explore.",
+    homeBrowseShortcut: "Browse foods",
+    homeFavoritesShortcut: "My favorites",
+    homeGoalsShortcut: "Foods for my goals",
+    goalSectionEyebrow: "Choose what matters to you",
+    monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     heroCta: "Browse all", goalPickerTitle: "What do you need?",
     goalEyes: "Eyes", goalHeart: "Heart", goalSkin: "Skin", goalEnergy: "Energy",
     goalImmunity: "Immunity", goalBones: "Bones",
@@ -48,8 +106,8 @@ const translations = {
     browseEyebrow: "The good stuff",
     browseTitleLead: "Meet your ", browseTitleAccent: "produce",
     sectionIntro: "Small, colorful choices can make a lovely difference.",
-    shortcutsEyebrow: "Quick picks", shortcutsTitle: "Find your next good thing",
-    shortcutsIntro: "Choose a shortcut to jump to matching foods.",
+    shortcutsEyebrow: "Start here", shortcutsTitle: "Where would you like to go?",
+    shortcutsIntro: "Pick one place to explore.",
     shortcutsAria: "Quick produce filters", shortcutFruits: "Fruits",
     shortcutVegetables: "Vegetables", shortcutEyes: "Eye health",
     shortcutHeart: "Heart health", shortcutImmunity: "Immunity", shortcutFavorites: "Favorites",
@@ -85,9 +143,10 @@ const translations = {
     languageLabel: "భాషను ఎంచుకోండి", cardStyleLabel: "కార్డు శైలి", stylePastel: "పాస్టెల్",
     styleTropical: "ట్రాపికల్", styleMinimal: "మినిమల్", themeDarkLabel: "డార్క్ మోడ్‌కు మారండి",
     themeLightLabel: "లైట్ మోడ్‌కు మారండి", themeTitle: "రంగు మోడ్ మార్చండి",
+    themeDarkShortLabel: "డార్క్", themeLightShortLabel: "లైట్",
     calmMode: "ప్రశాంత మోడ్", calmModeOn: "ఆన్", calmModeOff: "ఆఫ్",
     favoritesLabel: "ఇష్టమైనవి", navBrowse: "చూడండి",
-    searchOpen: "వెతకండి", searchClose: "మూసివేయండి",
+    searchOpen: "వెతకండి", searchClose: "మూసివేయండి", searchButtonLabel: "వెతకండి",
     searchLabel: "పండ్లు, కూరగాయల కోసం వెతకండి",
     searchPlaceholder: "“పాలకూర” లేదా “spinach” అని వెతకండి...",
     searchHint: "పేరు, పోషకం లేదా ప్రయోజనంతో వెతకండి",
@@ -97,6 +156,58 @@ const translations = {
     greetingMorning: "శుభోదయం! ఈ రోజు కొత్తగా మొదలుపెడదాం.",
     greetingAfternoon: "శుభ మధ్యాహ్నం! తాజా మంచి ఆహారాన్ని చూడండి.",
     greetingEvening: "శుభ సాయంత్రం! మీ కోసం మంచి ఆహారాన్ని ఎంచుకోండి.",
+    seasonHeroEyebrow: "తాజా ఆహారంతో మీ ఏడాది",
+    seasonHeroTitle: "సీజన్ల వెంట తాజా ఆహార ప్రయాణం",
+    seasonHeroDescription: "నెలనెలా దొరికే పండ్లు, కూరగాయలను తెలుసుకోండి. వాటిని సులభంగా ఎలా తినాలో చూడండి.",
+    seasonWheelEyebrow: "ఏడాది పొడవునా ఒక దారి",
+    journeyTitle: "తెరిచి ఉన్న నెలను ఎంచుకోండి",
+    journeyRouteAria: "నెలల వెంట సీజన్ల ఆహార ప్రయాణం",
+    seasonLegendAria: "ఋతువులు",
+    seasonWinter: "శీతాకాలం", seasonSpring: "వసంతం", seasonSummer: "వేసవి",
+    seasonMonsoon: "వర్షాకాలం", seasonAutumn: "శరదృతువు",
+    seasonMonthEyebrow: "నెలను ఎంచుకోండి",
+    seasonFoodsTitle: "{month} నెల తాజా ఎంపికలు",
+    seasonBenefitFallback: "మీ భోజనంలో వైవిధ్యం కోసం ఈ రంగుల ఆహారాన్ని ప్రయత్నించండి.",
+    previousMonth: "గత నెల", nextMonth: "తదుపరి నెల",
+    seasonEmpty: "ఈ నెలకు సరిపోయే ఆహారాలు ఇంకా జాబితాలో లేవు.",
+    seasonRegionNote: "పంట కాలం ప్రాంతాన్ని బట్టి మారుతుంది. కాలం స్పష్టంగా లేని ఆహారాలను కూడా ఎంపికల్లో చూపిస్తాం; మీ దగ్గర ఏవి తాజాగా ఉన్నాయో అడగండి.",
+    seasonItemsNote: "ఇక్కడ ఆరు వరకు ఎంపికలు ఉన్నాయి. ఈ నెలలోని అన్ని ఆహారాలను కింద చూడండి.",
+    seasonFallbackNote: "నెలల వారీ ఖచ్చితమైన వివరాలు ఇంకా లేవు. ఇవి సాధారణ ఆహార ఎంపికలు మాత్రమే; ఈ సీజన్‌లోనే దొరుకుతాయని నిర్ధారణ లేదు.",
+    seasonTipHeading: "సీజన్‌లో దొరికేవి ఎందుకు తినాలి?",
+    seasonTipFresh: "సీజన్‌లో దొరికేవి దూరం నుంచి రావాల్సిన అవసరం తక్కువ కాబట్టి తాజాగా ఉండొచ్చు.",
+    seasonTipAffordable: "స్థానికంగా పంట ఎక్కువగా ఉన్నప్పుడు వాటి ధర తక్కువగా ఉండొచ్చు.",
+    seasonTipTastier: "సరైన కాలంలో పండిన పండ్లు, కూరగాయలు రుచిగా ఉంటాయి.",
+    seasonBrowseButton: "ఈ నెలలో ఉన్న అన్ని ఆహారాలు చూడండి",
+    seasonFilterLabel: "{month} నెల ఆహారాలు; సాధారణ పంటకాల వివరాలున్నవి కూడా కనిపించవచ్చు.",
+    seasonFilterFallback: "{month} నెలకు ఖచ్చితమైన పంటకాల వివరాలు లేవు; బదులుగా సాధారణ ఆహారాలను చూపిస్తున్నాం.",
+    clearSeasonFilter: "నెల ఎంపిక తీసేయండి",
+    journeyProgressLabel: "ప్రయాణ పురోగతి",
+    journeyDiscovered: "తెలుసుకున్న ఆహారాలు: {count} / {total}",
+    journeyNextUnlock: "తర్వాతి నెలను తెరవడానికి ఇంకా {count} వేర్వేరు ఆహారాల వివరాలు చూడండి.",
+    journeyAllOpen: "12 నెలలూ తెరిచి ఉన్నాయి. మీకు నచ్చినట్లు చూడండి!",
+    journeySkipAhead: "ముందుకు వెళ్లండి — అన్ని నెలలూ తెరవండి",
+    journeyStartAgain: "మళ్లీ మొదలుపెట్టండి",
+    journeyLocked: "లాక్‌లో ఉంది",
+    journeyOpen: "తెరిచి ఉంది",
+    journeyCurrent: "ప్రస్తుత నెల",
+    journeyStopAria: "{month}, {season}. {status}",
+    journeyLockedStopAria: "{month} ఇంకా లాక్‌లో ఉంది. దాన్ని తెరవడానికి ఇంకా {count} వేర్వేరు ఆహారాల వివరాలు చూడండి.",
+    journeyUnlockMessage: "బాగుంది! {month} నెల తెరుచుకుంది. మరిన్ని ఆహారాలు తెలుసుకోండి!",
+    journeySkipMessage: "12 నెలలూ తెరిచాయి. మీకు నచ్చినట్లు చూడండి.",
+    journeyResetMessage: "ప్రయాణం మళ్లీ మొదలైంది. {month}, తర్వాతి నెల తెరిచి ఉన్నాయి.",
+    foodDayEyebrow: "ఈ రోజు తాజా ఎంపిక",
+    foodDayTitle: "రోజు ఆహారం",
+    foodDayIntro: "ఈ రోజు తెలుసుకోవడానికి, ఆస్వాదించడానికి ఒక సీజన్ ఆహారం.",
+    foodDayMonth: "{month} నెల నుంచి ఒక ఎంపిక",
+    seeDetails: "వివరాలు చూడండి",
+    shortcutsEyebrow: "ఇక్కడి నుంచి మొదలుపెట్టండి",
+    shortcutsTitle: "మీరు ఎక్కడికి వెళ్లాలనుకుంటున్నారు?",
+    shortcutsIntro: "చూడటానికి ఒక చోటును ఎంచుకోండి.",
+    homeBrowseShortcut: "ఆహారాలను చూడండి",
+    homeFavoritesShortcut: "నా ఇష్టమైనవి",
+    homeGoalsShortcut: "నా లక్ష్యాలకు సరిపోయేవి",
+    goalSectionEyebrow: "మీకు ముఖ్యమైనదాన్ని ఎంచుకోండి",
+    monthNames: ["జనవరి", "ఫిబ్రవరి", "మార్చి", "ఏప్రిల్", "మే", "జూన్", "జూలై", "ఆగస్టు", "సెప్టెంబర్", "అక్టోబర్", "నవంబర్", "డిసెంబర్"],
     heroCta: "అన్నీ చూడండి", goalPickerTitle: "మీకు ఏది కావాలి?",
     goalEyes: "కళ్లు", goalHeart: "గుండె", goalSkin: "చర్మం", goalEnergy: "శక్తి",
     goalImmunity: "రోగనిరోధక శక్తి", goalBones: "ఎముకలు",
@@ -107,8 +218,8 @@ const translations = {
     fifthFavorite: "బాగుంది! ఐదు ఇష్టమైన ఆహారాలను దాచారు.",
     browseEyebrow: "మంచి విషయాలు", browseTitleLead: "మీ కోసం ", browseTitleAccent: "పండ్లూ కూరగాయలూ",
     sectionIntro: "చిన్న చిన్న రంగుల ఎంపికలు మంచి మార్పు తీసుకురాగలవు.",
-    shortcutsEyebrow: "త్వరగా చూడండి", shortcutsTitle: "మీకు కావాల్సినవి ఒక్కచోట",
-    shortcutsIntro: "ఒక ఎంపికపై నొక్కితే, సంబంధిత ఆహారాల దగ్గరకు వెళ్తారు.",
+    shortcutsEyebrow: "ఇక్కడి నుంచి మొదలుపెట్టండి", shortcutsTitle: "మీరు ఎక్కడికి వెళ్లాలనుకుంటున్నారు?",
+    shortcutsIntro: "చూడటానికి ఒక చోటును ఎంచుకోండి.",
     shortcutsAria: "పండ్లు, కూరగాయలను త్వరగా వడపోసి చూడండి",
     shortcutFruits: "పండ్లు", shortcutVegetables: "కూరగాయలు",
     shortcutEyes: "కంటి ఆరోగ్యం", shortcutHeart: "గుండె ఆరోగ్యం",
@@ -142,6 +253,30 @@ const translations = {
 };
 let language = "en";
 let favorites = loadFavorites();
+let journeyProgress = loadJourneyProgress();
+
+// Keep only known food names so old or edited saved progress stays safe.
+function loadJourneyProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(journeyStorageKey) || "null");
+    const knownFoods = new Set(produceData.map((item) => item.name.en));
+    const discovered = Array.isArray(saved?.discovered)
+      ? [...new Set(saved.discovered.filter((name) => typeof name === "string" && knownFoods.has(name)))]
+      : [];
+    return { discovered, skipped: saved?.skipped === true };
+  } catch (error) {
+    console.warn("Fresh Facts could not read seasonal journey progress.", error);
+    return { discovered: [], skipped: false };
+  }
+}
+
+function saveJourneyProgress() {
+  try {
+    localStorage.setItem(journeyStorageKey, JSON.stringify(journeyProgress));
+  } catch (error) {
+    console.warn("Fresh Facts could not save seasonal journey progress.", error);
+  }
+}
 
 // Get an interface label in the selected language and fill simple name placeholders.
 function localizedText(key, replacements = {}) {
@@ -169,6 +304,14 @@ function localizedText(key, replacements = {}) {
     value = value.replace(`{${name}}`, String(replacement));
   });
   return value;
+}
+
+// Month lists use English text if a translation is missing or incomplete.
+function localizedMonthNames() {
+  const englishNames = translations.en.monthNames;
+  const selectedNames = (translations[language] || translations.en).monthNames;
+  if (!Array.isArray(selectedNames) || selectedNames.length !== 12) return englishNames;
+  return selectedNames.map((name, index) => typeof name === "string" && name.trim() ? name : englishNames[index]);
 }
 
 // Calm mode and the operating-system setting both turn off movement effects.
@@ -597,28 +740,17 @@ function createProduceCard(item, showSeasonBadge = false, goalName = "", entryIn
   return card;
 }
 
-const featuredFoodNames = ["Apple", "Blueberry", "Carrot", "Spinach", "Mango", "Tomato"];
-
-function renderFeaturedFoods() {
-  const featuredItems = featuredFoodNames.map((name) => {
-    const item = produceData.find((produce) => produce.name.en === name);
-    if (!item) throw new Error(`Featured food "${name}" was not found in data.js.`);
-    return item;
-  });
-  const grid = document.getElementById("featured-foods-grid");
-  releaseProduceModels(grid);
-  grid.replaceChildren(...featuredItems.map((item, index) => createProduceCard(item, false, "", index)));
-}
-
-// Season descriptions use Northern Hemisphere seasons; year-round foods match every month.
+// These broad season groups are a visual guide for India, not exact farm calendars.
 const monthsBySeason = {
   winter: [11, 0, 1],
-  spring: [2, 3, 4],
-  summer: [5, 6, 7],
-  fall: [8, 9, 10]
+  spring: [2, 3],
+  summer: [4, 5],
+  monsoon: [6, 7, 8],
+  fall: [9, 10]
 };
 
 function seasonIncludesMonth(seasonDescription, month) {
+  if (typeof seasonDescription !== "string" || !seasonDescription.trim()) return null;
   const mainSeason = seasonDescription.split(";")[0].toLowerCase();
   if (mainSeason.includes("year-round")) return true;
 
@@ -637,26 +769,345 @@ function seasonIncludesMonth(seasonDescription, month) {
   }
 
   const seasons = [...mainSeason.matchAll(/\b(early|late)?\s*(winter|spring|summer|fall)\b/g)];
+  if (seasons.length === 0) return null;
   return seasons.some(([, modifier, season]) => {
     const months = monthsBySeason[season];
+    if (!months) return false;
     if (modifier === "early") return months[0] === month;
     if (modifier === "late") return months[months.length - 1] === month;
     return months.includes(month);
   });
 }
 
-function renderInSeasonFoods(date = new Date()) {
-  const currentMonth = date.getMonth();
-  const inSeasonItems = produceData.filter((item) => seasonIncludesMonth(item.season.en, currentMonth));
-  const grid = document.getElementById("in-season-grid");
-  releaseProduceModels(grid);
-  grid.replaceChildren(...inSeasonItems.map((item, index) => createProduceCard(item, true, "", index)));
-  document.getElementById("in-season-empty").hidden = inSeasonItems.length > 0;
+// Prefer exact month numbers; use season text when the optional list is missing.
+function itemMonthStatus(item, month) {
+  const explicitMonths = item.months;
+  const hasValidMonthList = Array.isArray(explicitMonths)
+    && explicitMonths.length > 0
+    && explicitMonths.every((number) => Number.isInteger(number) && number >= 1 && number <= 12);
+  if (hasValidMonthList) return explicitMonths.includes(month + 1) ? "specific" : "not-listed";
+  if (item.season.en.toLowerCase().includes("year-round")) return "year-round";
+  const seasonMatch = seasonIncludesMonth(item.season.en, month);
+  return seasonMatch === null ? "unclear" : seasonMatch ? "seasonal" : "not-listed";
+}
+
+function itemMatchesMonth(item, month) {
+  const status = itemMonthStatus(item, month);
+  return status !== "not-listed";
+}
+
+function getFoodsForMonth(month) {
+  const priority = { specific: 3, seasonal: 2, "year-round": 1, unclear: 0 };
+  const seasonalFoods = produceData
+    .filter((item) => itemMatchesMonth(item, month))
+    .sort((first, second) => priority[itemMonthStatus(second, month)] - priority[itemMonthStatus(first, month)]);
+  // If season notes are incomplete, show general foods with a clear note instead of a blank month.
+  return seasonalFoods.length ? seasonalFoods : [...produceData];
+}
+
+function seasonForMonth(month) {
+  if (monthsBySeason.winter.includes(month)) return "winter";
+  if (monthsBySeason.spring.includes(month)) return "spring";
+  if (monthsBySeason.summer.includes(month)) return "summer";
+  if (monthsBySeason.monsoon.includes(month)) return "monsoon";
+  return "fall";
+}
+
+const seasonTranslationKeys = {
+  winter: "seasonWinter",
+  spring: "seasonSpring",
+  summer: "seasonSummer",
+  monsoon: "seasonMonsoon",
+  fall: "seasonAutumn"
+};
+const seasonIcons = { winter: "❄️", spring: "🌷", summer: "☀️", monsoon: "🌧️", fall: "🍂" };
+
+function unlockedJourneyMonthCount() {
+  return journeyProgress.skipped
+    ? 12
+    : Math.min(12, 2 + Math.floor(journeyProgress.discovered.length / foodsPerJourneyUnlock));
+}
+
+function journeyMonthOffset(month) {
+  return (month - journeyStartMonth + 12) % 12;
+}
+
+function isJourneyMonthUnlocked(month) {
+  return journeyMonthOffset(month) < unlockedJourneyMonthCount();
+}
+
+function journeyUnlocksNeeded() {
+  return foodsPerJourneyUnlock - (journeyProgress.discovered.length % foodsPerJourneyUnlock);
+}
+
+function renderJourneyProgress() {
+  const progress = document.getElementById("journey-progress");
+  const totalFoods = produceData.length;
+  const allMonthsOpen = unlockedJourneyMonthCount() === 12;
+  progress.max = Math.max(totalFoods, 1);
+  progress.value = journeyProgress.discovered.length;
+  document.getElementById("journey-discovered-count").textContent = localizedText("journeyDiscovered", {
+    count: journeyProgress.discovered.length,
+    total: totalFoods
+  });
+  document.getElementById("journey-unlock-hint").textContent = localizedText(
+    allMonthsOpen ? "journeyAllOpen" : "journeyNextUnlock",
+    { count: journeyUnlocksNeeded() }
+  );
+  document.getElementById("journey-skip").disabled = allMonthsOpen;
+  document.getElementById("journey-map").classList.toggle("journey-complete", allMonthsOpen);
+
+  const previousMonth = (selectedMonth + 11) % 12;
+  const nextMonth = (selectedMonth + 1) % 12;
+  document.getElementById("previous-month").disabled = !isJourneyMonthUnlocked(previousMonth);
+  document.getElementById("next-month").disabled = !isJourneyMonthUnlocked(nextMonth);
+}
+
+function renderSeasonPath() {
+  const monthNames = localizedMonthNames();
+  document.documentElement.dataset.season = seasonForMonth(selectedMonth);
+  const monthContainer = document.getElementById("journey-map");
+  const monthButtons = Array.from({ length: 12 }, (_, month) => {
+    const season = seasonForMonth(month);
+    const isSelected = month === selectedMonth;
+    const isUnlocked = isJourneyMonthUnlocked(month);
+    const isCurrent = month === journeyStartMonth;
+    const button = document.createElement("button");
+    const icon = document.createElement("span");
+    const copy = document.createElement("span");
+    const name = document.createElement("strong");
+    const seasonLabel = document.createElement("small");
+    const status = document.createElement("span");
+    const statusIcon = document.createElement("span");
+
+    button.className = "journey-stop";
+    button.type = "button";
+    button.dataset.month = String(month);
+    button.dataset.season = season;
+    button.disabled = !isUnlocked;
+    button.setAttribute("aria-pressed", String(isSelected));
+    button.setAttribute("aria-label", isUnlocked
+      ? localizedText("journeyStopAria", {
+        month: monthNames[month],
+        season: localizedText(seasonTranslationKeys[season]),
+        status: localizedText(isCurrent ? "journeyCurrent" : "journeyOpen")
+      })
+      : localizedText("journeyLockedStopAria", {
+        month: monthNames[month],
+        count: journeyUnlocksNeeded()
+      }));
+
+    const journeyPosition = journeyMonthOffset(month);
+    const row = Math.floor(journeyPosition / 3);
+    const positionInRow = journeyPosition % 3;
+    const column = row % 2 === 0 ? positionInRow : 2 - positionInRow;
+    button.style.gridColumn = String(column + 1);
+    button.style.gridRow = String(row + 1);
+
+    icon.className = "journey-stop-season-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = seasonIcons[season];
+    copy.className = "journey-stop-copy";
+    name.textContent = monthNames[month];
+    seasonLabel.textContent = localizedText(seasonTranslationKeys[season]);
+    copy.append(name, seasonLabel);
+    status.className = "journey-stop-state";
+    statusIcon.setAttribute("aria-hidden", "true");
+    statusIcon.textContent = isUnlocked ? "✓" : "🔒";
+    status.append(statusIcon, document.createTextNode(
+      localizedText(isUnlocked ? (isCurrent ? "journeyCurrent" : "journeyOpen") : "journeyLocked")
+    ));
+    button.append(icon, copy, status);
+
+    if (isSelected) {
+      button.classList.add("is-selected");
+      const apple = document.createElement("span");
+      const smile = document.createElement("span");
+      apple.className = "journey-apple";
+      apple.setAttribute("aria-hidden", "true");
+      apple.textContent = "🍎";
+      smile.className = "journey-apple-smile";
+      smile.textContent = "☺";
+      apple.append(smile);
+      button.append(apple);
+    }
+
+    button.addEventListener("click", (event) => selectSeasonMonth(month, true, event.detail === 0));
+    button.addEventListener("keydown", (event) => {
+      const forward = event.key === "ArrowRight" || event.key === "ArrowDown";
+      const backward = event.key === "ArrowLeft" || event.key === "ArrowUp";
+      if (!forward && !backward) return;
+      event.preventDefault();
+      const step = forward ? 1 : -1;
+      for (let distance = 1; distance < 12; distance += 1) {
+        const next = (month + step * distance + 120) % 12;
+        if (!isJourneyMonthUnlocked(next)) continue;
+        selectSeasonMonth(next, false, true);
+        break;
+      }
+    });
+    return button;
+  });
+  monthContainer.replaceChildren(...monthButtons);
+  document.getElementById("season-current-label").textContent = monthNames[selectedMonth];
+  document.getElementById("season-foods-title").textContent = localizedText("seasonFoodsTitle", {
+    month: monthNames[selectedMonth]
+  });
+
+  const tipKey = ["seasonTipFresh", "seasonTipAffordable", "seasonTipTastier"][selectedMonth % 3];
+  document.getElementById("season-tip").textContent = localizedText(tipKey);
+  renderJourneyProgress();
+}
+
+function renderSeasonFoods() {
+  const foods = getFoodsForMonth(selectedMonth);
+  const list = document.getElementById("season-food-list");
+  const itemsToShow = foods.slice(0, 6);
+  const hasSeasonMatches = itemsToShow.some((item) => itemMonthStatus(item, selectedMonth) !== "not-listed");
+  const note = document.getElementById("season-items-note");
+  document.getElementById("season-empty").hidden = true;
+  note.hidden = hasSeasonMatches && foods.length <= itemsToShow.length;
+  note.textContent = localizedText(hasSeasonMatches ? "seasonItemsNote" : "seasonFallbackNote");
+
+  list.replaceChildren(...itemsToShow.map((item) => {
+    const card = document.createElement("article");
+    card.className = "season-food-card";
+    const emoji = document.createElement("span");
+    emoji.className = "season-food-emoji";
+    emoji.setAttribute("aria-hidden", "true");
+    emoji.textContent = item.emoji;
+    const copy = document.createElement("div");
+    const name = document.createElement("h3");
+    name.textContent = localizedFoodValue(item, "name");
+    const benefit = document.createElement("p");
+    const details = document.createElement("button");
+    const benefits = localizedFoodValue(item, "benefits");
+    benefit.textContent = Array.isArray(benefits) && benefits.length
+      ? benefits[0]
+      : localizedText("seasonBenefitFallback");
+    copy.append(name, benefit);
+    details.className = "season-food-details";
+    details.type = "button";
+    details.dataset.details = item.name.en;
+    details.textContent = localizedText("seeDetails");
+    card.append(emoji, copy, details);
+    return card;
+  }));
+}
+
+function renderFoodOfTheDay(date = new Date()) {
+  const month = date.getMonth();
+  const foods = getFoodsForMonth(month);
+  const dailyFoods = foods.length ? foods : produceData;
+  const dayOfYear = Math.floor(
+    (Date.UTC(date.getFullYear(), month, date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 86400000
+  );
+  const item = dailyFoods[dayOfYear % dailyFoods.length];
+  const benefits = localizedFoodValue(item, "benefits");
+  document.getElementById("food-of-day-emoji").textContent = item.emoji;
+  document.getElementById("food-of-day-name").textContent = localizedFoodValue(item, "name");
+  document.getElementById("food-of-day-season").textContent = localizedText("foodDayMonth", {
+    month: localizedMonthNames()[month]
+  });
+  document.getElementById("food-of-day-benefit").textContent = Array.isArray(benefits) && benefits.length
+    ? benefits[0]
+    : localizedText("seasonBenefitFallback");
+  document.getElementById("food-of-day-details").dataset.details = item.name.en;
 }
 
 function renderHomeFoodSections() {
-  renderFeaturedFoods();
-  renderInSeasonFoods();
+  renderSeasonPath();
+  renderSeasonFoods();
+  renderFoodOfTheDay();
+}
+
+// Draw a colored route and connect the month stops in calendar order.
+function buildJourneyRoute() {
+  const svgNamespace = "http://www.w3.org/2000/svg";
+  const route = document.getElementById("journey-route-segments");
+  const points = Array.from({ length: 12 }, (_, journeyPosition) => {
+    const month = (journeyStartMonth + journeyPosition) % 12;
+    const row = Math.floor(journeyPosition / 3);
+    const positionInRow = journeyPosition % 3;
+    const column = row % 2 === 0 ? positionInRow : 2 - positionInRow;
+    return { x: 166 + column * 334, y: 65 + row * 130, season: seasonForMonth(month) };
+  });
+  route.replaceChildren();
+  points.slice(1).forEach((point, index) => {
+    const previous = points[index];
+    const segment = document.createElementNS(svgNamespace, "path");
+    segment.setAttribute("d", `M ${previous.x} ${previous.y} L ${point.x} ${point.y}`);
+    segment.setAttribute("class", `journey-route-segment season-${point.season}`);
+    route.append(segment);
+  });
+}
+
+function initializeSeasonExplorer() {
+  buildJourneyRoute();
+  document.getElementById("previous-month").addEventListener("click", () => {
+    selectSeasonMonth((selectedMonth + 11) % 12);
+  });
+  document.getElementById("next-month").addEventListener("click", () => {
+    selectSeasonMonth((selectedMonth + 1) % 12);
+  });
+  document.getElementById("month-browse-button").addEventListener("click", () => {
+    state.category = "all";
+    state.benefit = "";
+    state.favoritesOnly = false;
+    state.search = "";
+    state.seasonMonth = selectedMonth;
+    document.getElementById("search-input").value = "";
+    document.querySelectorAll('[data-filter-type="category"]').forEach((button) => {
+      const isAll = button.dataset.filterValue === "all";
+      button.classList.toggle("active", isAll);
+      button.setAttribute("aria-pressed", String(isAll));
+    });
+    document.querySelectorAll('[data-filter-type="benefit"]').forEach((button) => {
+      button.classList.remove("active");
+      button.setAttribute("aria-pressed", "false");
+    });
+    renderProduce();
+    document.getElementById("browse").scrollIntoView({ behavior: motionDisabled() ? "auto" : "smooth" });
+  });
+  document.getElementById("journey-skip").addEventListener("click", () => {
+    journeyProgress.skipped = true;
+    saveJourneyProgress();
+    renderSeasonPath();
+    document.getElementById("journey-feedback").textContent = localizedText("journeySkipMessage");
+  });
+  document.getElementById("journey-reset").addEventListener("click", () => {
+    journeyProgress = { discovered: [], skipped: false };
+    selectedMonth = journeyStartMonth;
+    saveJourneyProgress();
+    renderHomeFoodSections();
+    document.getElementById("journey-feedback").textContent = localizedText("journeyResetMessage", {
+      month: localizedMonthNames()[journeyStartMonth]
+    });
+  });
+  document.getElementById("clear-season-filter").addEventListener("click", () => {
+    state.seasonMonth = null;
+    renderProduce();
+  });
+}
+
+function selectSeasonMonth(month, revealFoods = false, focusFoods = false) {
+  if (!isJourneyMonthUnlocked(month)) {
+    document.getElementById("journey-feedback").textContent = localizedText("journeyLockedStopAria", {
+      month: localizedMonthNames()[month],
+      count: journeyUnlocksNeeded()
+    });
+    return;
+  }
+  selectedMonth = (month + 12) % 12;
+  renderSeasonPath();
+  renderSeasonFoods();
+  if (revealFoods) {
+    document.getElementById("season-month-panel").scrollIntoView({
+      behavior: motionDisabled() ? "auto" : "smooth",
+      block: "nearest"
+    });
+  }
+  if (focusFoods) document.getElementById("season-foods-title").focus();
 }
 
 // Keep the goal selection in sync and show matching produce cards below the buttons.
@@ -687,6 +1138,7 @@ function renderGoalFoods() {
 // Match the search and selected filters, sort if requested, and update the grid.
 function renderProduce() {
   const query = state.search.trim().toLocaleLowerCase(language);
+  const monthFoods = state.seasonMonth === null ? null : new Set(getFoodsForMonth(state.seasonMonth));
   const matchingItems = produceData.filter((item) => {
     const searchableText = [
       ...Object.values(item.name),
@@ -702,6 +1154,7 @@ function renderProduce() {
     return (state.category === "all" || item.category.en === state.category)
       && (!state.benefit || item.tags.en.includes(state.benefit))
       && (!state.favoritesOnly || favorites.includes(item.name.en))
+      && (monthFoods === null || monthFoods.has(item))
       && (!query || searchableText.includes(query));
   });
 
@@ -716,7 +1169,7 @@ function renderProduce() {
   document.getElementById("all-count").textContent = String(produceData.length);
   const emptyState = document.getElementById("empty-state");
   const isEmptyFavorites = state.favoritesOnly && favorites.length === 0 && !query
-    && state.category === "all" && !state.benefit;
+    && state.category === "all" && !state.benefit && state.seasonMonth === null;
   emptyState.hidden = matchingItems.length > 0;
   emptyState.classList.toggle("favorites-empty", isEmptyFavorites);
   document.getElementById("empty-illustration").textContent = isEmptyFavorites ? "💚" : "🧺";
@@ -725,6 +1178,20 @@ function renderProduce() {
   document.getElementById("favorites-toggle").setAttribute("aria-pressed", String(state.favoritesOnly));
   document.getElementById("favorite-count").textContent = String(favorites.length);
   document.getElementById("shortcut-favorite-count").textContent = String(favorites.length);
+  const seasonFilterStatus = document.getElementById("season-filter-status");
+  seasonFilterStatus.hidden = state.seasonMonth === null;
+  if (state.seasonMonth !== null) {
+    const hasSeasonMatches = getFoodsForMonth(state.seasonMonth)
+      .some((item) => itemMonthStatus(item, state.seasonMonth) !== "not-listed");
+    document.getElementById("season-filter-label").textContent = localizedText("seasonFilterLabel", {
+      month: localizedMonthNames()[state.seasonMonth]
+    });
+    if (!hasSeasonMatches) {
+      document.getElementById("season-filter-label").textContent = localizedText("seasonFilterFallback", {
+        month: localizedMonthNames()[state.seasonMonth]
+      });
+    }
+  }
   document.querySelectorAll("[data-shortcut-category], [data-shortcut-benefit], [data-shortcut-favorites]").forEach((button) => {
     const isFavoriteShortcut = button.dataset.shortcutFavorites === "true";
     const isCategoryShortcut = Boolean(button.dataset.shortcutCategory);
@@ -786,7 +1253,31 @@ function openDetails(name) {
   );
   const dialog = document.getElementById("details-dialog");
   if (!dialog.open) dialog.showModal();
+  recordJourneyDiscovery(item);
   activateProduceModel(modelViewer);
+}
+
+// Count each food once, even if a visitor opens its details more than once.
+function recordJourneyDiscovery(item) {
+  if (journeyProgress.discovered.includes(item.name.en)) return;
+  const previousOpenMonths = unlockedJourneyMonthCount();
+  journeyProgress.discovered.push(item.name.en);
+  saveJourneyProgress();
+
+  const newlyOpenMonths = unlockedJourneyMonthCount();
+  renderSeasonPath();
+  if (newlyOpenMonths > previousOpenMonths) {
+    const newMonth = (journeyStartMonth + previousOpenMonths) % 12;
+    const unlockedStop = document.querySelector(`.journey-stop[data-month="${newMonth}"]`);
+    if (unlockedStop && !motionDisabled()) {
+      unlockedStop.classList.add("just-unlocked");
+      window.setTimeout(() => unlockedStop.classList.remove("just-unlocked"), 1400);
+    }
+    document.getElementById("journey-feedback").textContent = localizedText("journeyUnlockMessage", {
+      month: localizedMonthNames()[newMonth]
+    });
+    return;
+  }
 }
 
 // Create a heading element for one of the details sections.
@@ -864,6 +1355,7 @@ function applyShortcutFilter(button) {
   state.benefit = button.dataset.shortcutBenefit || "";
   state.favoritesOnly = button.dataset.shortcutFavorites === "true";
   state.search = "";
+  state.seasonMonth = null;
   document.getElementById("search-input").value = "";
 
   document.querySelectorAll('[data-filter-type="category"]').forEach((filterButton) => {
@@ -888,6 +1380,9 @@ function applyTheme(theme) {
   themeButton.setAttribute("aria-label", localizedText(isDark ? "themeLightLabel" : "themeDarkLabel"));
   themeButton.title = localizedText("themeTitle");
   themeButton.querySelector("span").textContent = isDark ? "☀" : "☾";
+  themeButton.querySelector(".icon-button-label").textContent = localizedText(
+    isDark ? "themeLightShortLabel" : "themeDarkShortLabel"
+  );
   try {
     localStorage.setItem(themeStorageKey, theme);
   } catch (error) {
@@ -931,6 +1426,9 @@ function applyLanguage(selectedLanguage) {
   const themeButton = document.getElementById("theme-toggle");
   themeButton.setAttribute("aria-label", localizedText(isDark ? "themeLightLabel" : "themeDarkLabel"));
   themeButton.title = localizedText("themeTitle");
+  themeButton.querySelector(".icon-button-label").textContent = localizedText(
+    isDark ? "themeLightShortLabel" : "themeDarkShortLabel"
+  );
   document.getElementById("calm-mode-state").textContent = localizedText(
     document.documentElement.dataset.calmMode === "true" ? "calmModeOn" : "calmModeOff"
   );
@@ -986,6 +1484,7 @@ function initializeBackgroundParallax() {
 function initializePage() {
   initializeProduceModelObserver();
   initializeScrollReveals();
+  initializeSeasonExplorer();
   initializeCursorGlow();
   initializeBackgroundParallax();
   document.querySelectorAll("[data-language]").forEach((button) => {
@@ -1026,6 +1525,25 @@ function initializePage() {
     renderProduce();
     document.getElementById("browse").scrollIntoView({ behavior: "smooth" });
   });
+  document.getElementById("home-favorites-shortcut").addEventListener("click", () => {
+    state.category = "all";
+    state.benefit = "";
+    state.favoritesOnly = true;
+    state.search = "";
+    state.seasonMonth = null;
+    document.getElementById("search-input").value = "";
+    document.querySelectorAll('[data-filter-type="category"]').forEach((button) => {
+      const isAll = button.dataset.filterValue === "all";
+      button.classList.toggle("active", isAll);
+      button.setAttribute("aria-pressed", String(isAll));
+    });
+    document.querySelectorAll('[data-filter-type="benefit"]').forEach((button) => {
+      button.classList.remove("active");
+      button.setAttribute("aria-pressed", "false");
+    });
+    renderProduce();
+    document.getElementById("browse").scrollIntoView({ behavior: motionDisabled() ? "auto" : "smooth" });
+  });
   document.getElementById("theme-toggle").addEventListener("click", () => {
     applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
   });
@@ -1064,6 +1582,7 @@ function initializePage() {
     state.benefit = "";
     state.favoritesOnly = false;
     state.search = "";
+    state.seasonMonth = null;
     searchInput.value = "";
     document.getElementById("sort-select").value = "featured";
     document.querySelectorAll("[data-filter-type]").forEach((button) => {

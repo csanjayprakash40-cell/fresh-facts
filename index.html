@@ -52,11 +52,13 @@
         </button>
         <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode">
           <span aria-hidden="true">☾</span>
+          <span class="icon-button-label" data-i18n="themeDarkShortLabel">Dark</span>
         </button>
         <!-- The small header button opens the existing live search. -->
         <div class="header-search" id="header-search">
           <button class="icon-button search-toggle" id="search-toggle" type="button" aria-controls="search-popover" aria-expanded="false" aria-label="Open search" data-i18n-attr="aria-label:searchOpen">
             <span aria-hidden="true">⌕</span>
+            <span class="icon-button-label" data-i18n="searchButtonLabel">Search</span>
           </button>
           <div class="search-popover" id="search-popover" role="region" aria-labelledby="search-label" hidden>
             <div class="search-popover-heading">
@@ -84,22 +86,141 @@
   </header>
 
   <main id="main">
-    <section class="hero section-wrap" id="home" aria-labelledby="hero-title">
-      <div class="hero-orbit" aria-hidden="true">
-        <span class="hero-produce hero-produce-orange">🍊</span>
-        <span class="hero-produce hero-produce-leaf">🥑</span>
-        <span class="hero-produce hero-produce-berry">🍓</span>
-        <span class="hero-produce hero-produce-carrot">🥕</span>
+    <section class="hero season-hero section-wrap" id="home" aria-labelledby="hero-title">
+      <div class="seasonal-hero-grid">
+        <div class="hero-copy season-hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="seasonHeroEyebrow">Your Year of Fresh Food</span></p>
+          <h1 id="hero-title"><span data-i18n="seasonHeroTitle">Take a fresh journey through the seasons</span></h1>
+          <p class="hero-description" data-i18n="seasonHeroDescription">Follow the months, discover seasonal foods, and find simple ways to enjoy them.</p>
+          <p class="friendly-greeting" id="friendly-greeting" aria-live="polite"></p>
+          <div class="seasonal-floaters" aria-hidden="true">
+            <span>🍊</span><span>🍃</span><span>🥕</span><span>🍓</span>
+          </div>
+        </div>
+
+        <!-- Two months start open; exploring food details opens the next stops. -->
+        <div class="journey-panel" aria-labelledby="journey-title">
+          <div class="journey-heading">
+            <div>
+              <p class="eyebrow" data-i18n="seasonWheelEyebrow">A path through the year</p>
+              <h2 id="journey-title" data-i18n="journeyTitle">Choose an open month</h2>
+            </div>
+            <p class="season-current-label" id="season-current-label" aria-live="polite"></p>
+          </div>
+          <div class="journey-map-wrap">
+            <svg class="journey-route" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
+              <g id="journey-route-segments"></g>
+            </svg>
+            <div class="journey-map" id="journey-map" role="group" aria-label="Seasonal journey through the months" data-i18n-attr="aria-label:journeyRouteAria"></div>
+          </div>
+          <div class="season-legend" role="list" aria-label="Seasons" data-i18n-attr="aria-label:seasonLegendAria">
+            <span class="season-legend-item" role="listitem"><span aria-hidden="true">❄️</span><span data-i18n="seasonWinter">Winter</span></span>
+            <span class="season-legend-item" role="listitem"><span aria-hidden="true">🌷</span><span data-i18n="seasonSpring">Spring</span></span>
+            <span class="season-legend-item" role="listitem"><span aria-hidden="true">☀️</span><span data-i18n="seasonSummer">Summer</span></span>
+            <span class="season-legend-item" role="listitem"><span aria-hidden="true">🌧️</span><span data-i18n="seasonMonsoon">Monsoon</span></span>
+            <span class="season-legend-item" role="listitem"><span aria-hidden="true">🍂</span><span data-i18n="seasonAutumn">Autumn</span></span>
+          </div>
+          <div class="journey-progress">
+            <div class="journey-progress-heading">
+              <label id="journey-progress-label" for="journey-progress" data-i18n="journeyProgressLabel">Journey progress</label>
+              <span id="journey-discovered-count"></span>
+            </div>
+            <progress id="journey-progress" max="1" value="0" aria-labelledby="journey-progress-label"></progress>
+            <p class="journey-unlock-hint" id="journey-unlock-hint"></p>
+            <div class="journey-actions">
+              <button class="journey-action journey-skip" id="journey-skip" type="button" data-i18n="journeySkipAhead">Skip ahead — open all months</button>
+              <button class="journey-action" id="journey-reset" type="button" data-i18n="journeyStartAgain">Start again</button>
+            </div>
+            <p class="journey-feedback" id="journey-feedback" role="status" aria-live="polite"></p>
+          </div>
+        </div>
       </div>
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="heroEyebrow">A little goodness, every day</span></p>
-        <h1 id="hero-title"><span data-i18n="heroTitleLine1">Good things</span><br><span data-i18n="heroTitleLine2">grow </span><span data-i18n="heroTitleAccent">here.</span></h1>
-        <p class="hero-description" data-i18n="heroDescription">A fresh look at the fruits and veggies that help you feel your best.</p>
-        <p class="friendly-greeting" id="friendly-greeting" aria-live="polite"></p>
-        <a class="button button-primary hero-cta" href="#browse"><span data-i18n="heroCta">Browse all</span><span aria-hidden="true">→</span></a>
+
+      <div class="season-month-panel" id="season-month-panel">
+        <div class="season-month-heading">
+          <div>
+            <p class="eyebrow" data-i18n="seasonMonthEyebrow">Month explorer</p>
+            <h2 id="season-foods-title" tabindex="-1" aria-live="polite"></h2>
+          </div>
+          <div class="season-month-controls">
+            <button class="season-month-step" id="previous-month" type="button">
+              <span aria-hidden="true">←</span><span data-i18n="previousMonth">Previous month</span>
+            </button>
+            <button class="season-month-step" id="next-month" type="button">
+              <span data-i18n="nextMonth">Next month</span><span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+        <div class="season-food-list" id="season-food-list" aria-live="polite"></div>
+        <p class="season-items-note" id="season-items-note" data-i18n="seasonItemsNote" hidden>Here are up to six picks. Browse the full month list below.</p>
+        <p class="season-empty" id="season-empty" data-i18n="seasonEmpty" hidden>No foods are listed for this month yet.</p>
+        <p class="season-region-note" data-i18n="seasonRegionNote">Seasons vary by region. Ask what is fresh near you.</p>
+        <div class="season-month-footer">
+          <div class="season-tip">
+            <strong data-i18n="seasonTipHeading">Why eat in season?</strong>
+            <p id="season-tip"></p>
+          </div>
+          <button class="button button-primary season-browse-button" id="month-browse-button" type="button">
+            <span data-i18n="seasonBrowseButton">See all foods for this month</span><span aria-hidden="true">→</span>
+          </button>
+        </div>
       </div>
+    </section>
+
+    <!-- A date-based pick changes each day but stays the same when the page is refreshed. -->
+    <section class="food-of-day-section section-wrap" aria-labelledby="food-of-day-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" data-i18n="foodDayEyebrow">A fresh pick for today</p>
+          <h2 id="food-of-day-title" data-i18n="foodDayTitle">Food of the day</h2>
+        </div>
+        <p class="section-intro" data-i18n="foodDayIntro">One seasonal food to enjoy and learn about.</p>
+      </div>
+      <article class="food-of-day-card" id="food-of-day-card">
+        <span class="food-of-day-emoji" id="food-of-day-emoji" aria-hidden="true"></span>
+        <div class="food-of-day-copy">
+          <p class="food-of-day-season" id="food-of-day-season"></p>
+          <h3 id="food-of-day-name"></h3>
+          <p id="food-of-day-benefit"></p>
+        </div>
+        <button class="button button-primary" id="food-of-day-details" type="button">
+          <span data-i18n="seeDetails">See details</span><span aria-hidden="true">→</span>
+        </button>
+      </article>
+    </section>
+
+    <!-- These three large shortcuts take visitors to the main parts of the site. -->
+    <section class="shortcut-section section-wrap" aria-labelledby="shortcuts-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" data-i18n="shortcutsEyebrow">Start here</p>
+          <h2 id="shortcuts-title" data-i18n="shortcutsTitle">Where would you like to go?</h2>
+        </div>
+        <p class="section-intro" data-i18n="shortcutsIntro">Pick one place to explore.</p>
+      </div>
+      <div class="shortcut-grid home-shortcut-grid">
+        <a class="shortcut-card home-shortcut" href="#browse">
+          <span class="shortcut-icon" aria-hidden="true">🧺</span>
+          <span class="shortcut-label" data-i18n="homeBrowseShortcut">Browse foods</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </a>
+        <button class="shortcut-card home-shortcut" id="home-favorites-shortcut" type="button">
+          <span class="shortcut-icon" aria-hidden="true">♥</span>
+          <span class="shortcut-label shortcut-label-count"><span data-i18n="homeFavoritesShortcut">My favorites</span><span class="shortcut-count" id="shortcut-favorite-count">0</span></span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+        <a class="shortcut-card home-shortcut" href="#goal-picker">
+          <span class="shortcut-icon" aria-hidden="true">🌱</span>
+          <span class="shortcut-label" data-i18n="homeGoalsShortcut">Foods for my goals</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="goal-section section-wrap" id="goal-picker" aria-labelledby="goal-picker-title">
       <div class="hero-features">
         <div class="goal-picker">
+          <p class="eyebrow" data-i18n="goalSectionEyebrow">Choose what matters to you</p>
           <h2 id="goal-picker-title" data-i18n="goalPickerTitle">What do you need?</h2>
           <div class="goal-picker-options" role="group" aria-labelledby="goal-picker-title">
             <button class="goal-button" type="button" data-goal="Eyes" aria-pressed="false"><span aria-hidden="true">◉</span><span data-i18n="goalEyes">Eyes</span></button>
@@ -115,79 +236,6 @@
           <div class="produce-grid goal-results-grid" id="goal-results-grid"></div>
           <p class="goal-empty" id="goal-empty" data-i18n="goalEmpty" hidden>No foods match this goal yet.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- These buttons jump to the Browse section with a quick filter selected. -->
-    <section class="shortcut-section section-wrap" aria-labelledby="shortcuts-title">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow" data-i18n="shortcutsEyebrow">Quick picks</p>
-          <h2 id="shortcuts-title" data-i18n="shortcutsTitle">Find your next good thing</h2>
-        </div>
-        <p class="section-intro" data-i18n="shortcutsIntro">Choose a shortcut to jump to matching foods.</p>
-      </div>
-      <div class="shortcut-grid" role="group" aria-label="Quick produce filters" data-i18n-attr="aria-label:shortcutsAria">
-        <button class="shortcut-card" type="button" data-shortcut-category="fruit" aria-pressed="false">
-          <span class="shortcut-icon" aria-hidden="true">🍓</span>
-          <span class="shortcut-label" data-i18n="shortcutFruits">Fruits</span>
-          <span class="shortcut-arrow" aria-hidden="true">→</span>
-        </button>
-        <button class="shortcut-card" type="button" data-shortcut-category="vegetable" aria-pressed="false">
-          <span class="shortcut-icon" aria-hidden="true">🥦</span>
-          <span class="shortcut-label" data-i18n="shortcutVegetables">Vegetables</span>
-          <span class="shortcut-arrow" aria-hidden="true">→</span>
-        </button>
-        <button class="shortcut-card" type="button" data-shortcut-benefit="Eyes" aria-pressed="false">
-          <span class="shortcut-icon" aria-hidden="true">◉</span>
-          <span class="shortcut-label" data-i18n="shortcutEyes">Eye health</span>
-          <span class="shortcut-arrow" aria-hidden="true">→</span>
-        </button>
-        <button class="shortcut-card" type="button" data-shortcut-benefit="Heart" aria-pressed="false">
-          <span class="shortcut-icon" aria-hidden="true">♡</span>
-          <span class="shortcut-label" data-i18n="shortcutHeart">Heart health</span>
-          <span class="shortcut-arrow" aria-hidden="true">→</span>
-        </button>
-        <button class="shortcut-card" type="button" data-shortcut-benefit="Immunity" aria-pressed="false">
-          <span class="shortcut-icon" aria-hidden="true">✚</span>
-          <span class="shortcut-label" data-i18n="shortcutImmunity">Immunity</span>
-          <span class="shortcut-arrow" aria-hidden="true">→</span>
-        </button>
-        <button class="shortcut-card" type="button" data-shortcut-favorites="true" aria-pressed="false">
-          <span class="shortcut-icon" aria-hidden="true">♥</span>
-          <span class="shortcut-label shortcut-label-count">
-            <span data-i18n="shortcutFavorites">Favorites</span><span class="shortcut-count" id="shortcut-favorite-count">0</span>
-          </span>
-          <span class="shortcut-arrow" aria-hidden="true">→</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- These featured cards stay in a row and can be swiped on phones. -->
-    <section class="featured-section section-wrap" aria-labelledby="featured-title">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow" data-i18n="featuredEyebrow">Fresh picks</p>
-          <h2 id="featured-title" data-i18n="featuredTitle">Featured foods</h2>
-        </div>
-        <p class="section-intro" data-i18n="featuredIntro">A few colorful favorites to get you started.</p>
-      </div>
-      <div class="featured-foods-grid" id="featured-foods-grid" aria-label="Featured fruits and vegetables" data-i18n-attr="aria-label:featuredAria"></div>
-    </section>
-
-    <!-- The matching foods and their season badges are filled from data.js. -->
-    <section class="in-season-section section-wrap" aria-labelledby="in-season-title">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow" data-i18n="inSeasonEyebrow">At their best</p>
-          <h2 id="in-season-title" data-i18n="inSeasonTitle">In season now</h2>
-        </div>
-        <p class="section-intro" data-i18n="inSeasonIntro">Fresh picks that are in season this month.</p>
-      </div>
-      <div class="produce-grid in-season-grid" id="in-season-grid" aria-label="Foods in season now" data-i18n-attr="aria-label:inSeasonAria"></div>
-      <div class="in-season-empty" id="in-season-empty" hidden>
-        <span aria-hidden="true">🌱</span>
-        <p data-i18n="inSeasonEmpty">Nothing is listed as in season right now. Try browsing all the produce.</p>
       </div>
     </section>
 
@@ -208,6 +256,10 @@
           </label>
           <span class="result-count" id="result-count" aria-live="polite"></span>
         </div>
+      </div>
+      <div class="season-filter-status" id="season-filter-status" hidden>
+        <span id="season-filter-label"></span>
+        <button type="button" id="clear-season-filter" data-i18n="clearSeasonFilter">Clear month</button>
       </div>
       <div class="benefit-filters" role="group" aria-label="Filter by benefit" data-i18n-attr="aria-label:benefitFilterAria">
         <span data-i18n="benefitPrompt">I'm looking for</span>
