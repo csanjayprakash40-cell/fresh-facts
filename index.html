@@ -89,21 +89,21 @@
     <section class="hero season-hero section-wrap" id="home" aria-labelledby="hero-title">
       <div class="seasonal-hero-grid">
         <div class="hero-copy season-hero-copy">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="seasonHeroEyebrow">Your Year of Fresh Food</span></p>
-          <h1 id="hero-title"><span data-i18n="seasonHeroTitle">Take a fresh journey through the seasons</span></h1>
-          <p class="hero-description" data-i18n="seasonHeroDescription">Follow the months, discover seasonal foods, and find simple ways to enjoy them.</p>
+          <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="seasonHeroEyebrow">Seasonal calendar</span></p>
+          <h1 id="hero-title"><span data-i18n="seasonHeroTitle">What's fresh this month?</span></h1>
+          <p class="hero-description" data-i18n="seasonHeroDescription">Explore what's in season, then choose a month to see its foods.</p>
           <p class="friendly-greeting" id="friendly-greeting" aria-live="polite"></p>
           <div class="seasonal-floaters" aria-hidden="true">
             <span>🍊</span><span>🍃</span><span>🥕</span><span>🍓</span>
           </div>
         </div>
 
-        <!-- Two months start open; exploring food details opens the next stops. -->
+        <!-- All 12 month stops stay open, with the current month marked for visitors. -->
         <div class="journey-panel" aria-labelledby="journey-title">
           <div class="journey-heading">
             <div>
-              <p class="eyebrow" data-i18n="seasonWheelEyebrow">A path through the year</p>
-              <h2 id="journey-title" data-i18n="journeyTitle">Choose an open month</h2>
+              <p class="eyebrow" data-i18n="seasonWheelEyebrow">A path through the seasons</p>
+              <h2 id="journey-title" data-i18n="journeyTitle">Choose a month</h2>
             </div>
             <p class="season-current-label" id="season-current-label" aria-live="polite"></p>
           </div>
@@ -119,19 +119,6 @@
             <span class="season-legend-item" role="listitem"><span aria-hidden="true">☀️</span><span data-i18n="seasonSummer">Summer</span></span>
             <span class="season-legend-item" role="listitem"><span aria-hidden="true">🌧️</span><span data-i18n="seasonMonsoon">Monsoon</span></span>
             <span class="season-legend-item" role="listitem"><span aria-hidden="true">🍂</span><span data-i18n="seasonAutumn">Autumn</span></span>
-          </div>
-          <div class="journey-progress">
-            <div class="journey-progress-heading">
-              <label id="journey-progress-label" for="journey-progress" data-i18n="journeyProgressLabel">Journey progress</label>
-              <span id="journey-discovered-count"></span>
-            </div>
-            <progress id="journey-progress" max="1" value="0" aria-labelledby="journey-progress-label"></progress>
-            <p class="journey-unlock-hint" id="journey-unlock-hint"></p>
-            <div class="journey-actions">
-              <button class="journey-action journey-skip" id="journey-skip" type="button" data-i18n="journeySkipAhead">Skip ahead — open all months</button>
-              <button class="journey-action" id="journey-reset" type="button" data-i18n="journeyStartAgain">Start again</button>
-            </div>
-            <p class="journey-feedback" id="journey-feedback" role="status" aria-live="polite"></p>
           </div>
         </div>
       </div>
@@ -149,6 +136,7 @@
             <button class="season-month-step" id="next-month" type="button">
               <span data-i18n="nextMonth">Next month</span><span aria-hidden="true">→</span>
             </button>
+            <button class="season-month-step season-month-current" id="current-month-button" type="button" data-i18n="backToCurrentMonth">Back to this month</button>
           </div>
         </div>
         <div class="season-food-list" id="season-food-list" aria-live="polite"></div>
