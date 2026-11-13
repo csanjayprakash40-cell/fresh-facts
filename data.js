@@ -119,6 +119,8 @@ const produceData = englishProduceData.map((item) => {
   return {
     name: { en: item.name, te: telugu.name },
     emoji: item.emoji,
+    // For example, "Bell Pepper" loads models/bell-pepper.glb.
+    model: `models/${item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.glb`,
     category: { en: item.category, te: item.category === "fruit" ? "పండు" : "కూరగాయ" },
     nutrients: { en: item.nutrients, te: item.nutrients.map(translateNutrient) },
     benefits: { en: item.benefits, te: telugu.benefits },
