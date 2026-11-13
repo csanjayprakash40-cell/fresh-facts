@@ -107,6 +107,14 @@
             </div>
             <p class="season-current-label" id="season-current-label" aria-live="polite"></p>
           </div>
+          <!-- This developer test control only appears with ?testmonth=1 in the page URL. -->
+          <div class="test-month-control" id="test-month-control" hidden>
+            <label for="test-month-select" data-i18n="testMonthLabel">Test month</label>
+            <select id="test-month-select" data-i18n-attr="aria-label:testMonthLabel"></select>
+            <button class="season-month-step" id="test-month-reset" type="button" data-i18n="backToRealMonth">
+              Back to real month
+            </button>
+          </div>
           <div class="journey-map-wrap">
             <svg class="journey-route" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
               <g id="journey-route-segments"></g>
