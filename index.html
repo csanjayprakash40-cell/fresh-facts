@@ -31,9 +31,19 @@
         <span class="brand-mark" aria-hidden="true">✳</span>
         <span>fresh<span class="brand-accent">facts</span></span>
       </a>
-      <nav class="main-nav" aria-label="Main navigation" data-i18n-attr="aria-label:mainNavAria">
-        <a href="#home" data-i18n="navHome">Home</a><a href="#browse" data-i18n="navBrowse">Browse</a><a href="#about" data-i18n="navAbout">About</a>
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation" data-i18n-attr="aria-label:mainNavAria">
+        <a href="#home" data-i18n="navHome">Home</a>
+        <a href="#browse" data-i18n="navBrowse">Browse</a>
+        <a class="favorites-link" href="#browse" id="favorites-toggle" aria-pressed="false">
+          <span aria-hidden="true">♡</span><span data-i18n="favoritesLabel">Favorites</span>
+          <span class="favorite-count" id="favorite-count">0</span>
+        </a>
+        <a href="#about" data-i18n="navAbout">About</a>
       </nav>
+      <!-- This button opens the navigation links on small screens. -->
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-i18n-attr="aria-label:menuOpen">
+        <span aria-hidden="true">☰</span>
+      </button>
       <!-- Choose a color theme for the produce cards. -->
       <div class="card-style-control">
         <label for="card-style-select" data-i18n="cardStyleLabel">Card style</label>
@@ -49,7 +59,6 @@
           <button type="button" lang="te" data-language="te" aria-pressed="false">తెలుగు</button>
         </div>
         <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode"><span aria-hidden="true">☾</span></button>
-        <a class="favorites-link" href="#browse" id="favorites-toggle" aria-pressed="false"><span aria-hidden="true">♡</span> <span data-i18n="favoritesLabel">Favorites</span> <span class="favorite-count" id="favorite-count">0</span></a>
       </div>
     </div>
   </header>
@@ -60,8 +69,6 @@
         <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="heroEyebrow">A little goodness, every day</span></p>
         <h1 id="hero-title"><span data-i18n="heroTitleLine1">Good things</span><br><span data-i18n="heroTitleLine2">grow </span><span data-i18n="heroTitleAccent">here.</span></h1>
         <p class="hero-description" data-i18n="heroDescription">A fresh look at the fruits and veggies that help you feel your best.</p>
-        <a class="button button-primary hero-cta" href="#browse"><span data-i18n="heroCta">Explore the produce</span> <span aria-hidden="true">→</span></a>
-        <div class="hero-note"><span aria-hidden="true">✦</span> <span data-i18n="heroNote">Everyday ingredients. Feel-good facts.</span></div>
       </div>
       <div class="hero-art" aria-label="Illustration of colorful fresh produce" data-i18n-attr="aria-label:heroArtAria" role="img">
         <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
@@ -73,10 +80,104 @@
         <span class="produce produce-blueberry" aria-hidden="true">🫐</span>
         <div class="hero-sticker"><span data-i18n="heroSticker">Eat the rainbow</span><span class="sticker-star" aria-hidden="true">✳</span></div>
       </div>
-      <div class="hero-search">
-        <label for="search-input" data-i18n="searchLabel">Find your feel-good food</label>
-        <div class="search-control"><span class="search-icon" aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Try “eyes” or “spinach”..." data-i18n-attr="placeholder:searchPlaceholder" autocomplete="off"><kbd>⌘ K</kbd></div>
-        <p data-i18n="searchHint">Search produce, nutrients, or benefits</p>
+      <div class="hero-bottom">
+        <div class="hero-search">
+          <label for="search-input" data-i18n="searchLabel">Find your feel-good food</label>
+          <div class="search-control"><span class="search-icon" aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Try “eyes” or “spinach”..." data-i18n-attr="placeholder:searchPlaceholder" autocomplete="off"><kbd>⌘ K</kbd></div>
+          <p data-i18n="searchHint">Search produce, nutrients, or benefits</p>
+        </div>
+        <a class="button button-primary hero-cta" href="#browse"><span data-i18n="heroCta">Browse all</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <!-- These buttons jump to the Browse section with a quick filter selected. -->
+    <section class="shortcut-section section-wrap" aria-labelledby="shortcuts-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" data-i18n="shortcutsEyebrow">Quick picks</p>
+          <h2 id="shortcuts-title" data-i18n="shortcutsTitle">Find your next good thing</h2>
+        </div>
+        <p class="section-intro" data-i18n="shortcutsIntro">Choose a shortcut to jump to matching foods.</p>
+      </div>
+      <div class="shortcut-grid" role="group" aria-label="Quick produce filters" data-i18n-attr="aria-label:shortcutsAria">
+        <button class="shortcut-card" type="button" data-shortcut-category="fruit" aria-pressed="false">
+          <span class="shortcut-icon" aria-hidden="true">🍓</span>
+          <span class="shortcut-label" data-i18n="shortcutFruits">Fruits</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="shortcut-card" type="button" data-shortcut-category="vegetable" aria-pressed="false">
+          <span class="shortcut-icon" aria-hidden="true">🥦</span>
+          <span class="shortcut-label" data-i18n="shortcutVegetables">Vegetables</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="shortcut-card" type="button" data-shortcut-benefit="Eyes" aria-pressed="false">
+          <span class="shortcut-icon" aria-hidden="true">◉</span>
+          <span class="shortcut-label" data-i18n="shortcutEyes">Eye health</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="shortcut-card" type="button" data-shortcut-benefit="Heart" aria-pressed="false">
+          <span class="shortcut-icon" aria-hidden="true">♡</span>
+          <span class="shortcut-label" data-i18n="shortcutHeart">Heart health</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="shortcut-card" type="button" data-shortcut-benefit="Immunity" aria-pressed="false">
+          <span class="shortcut-icon" aria-hidden="true">✚</span>
+          <span class="shortcut-label" data-i18n="shortcutImmunity">Immunity</span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="shortcut-card" type="button" data-shortcut-favorites="true" aria-pressed="false">
+          <span class="shortcut-icon" aria-hidden="true">♥</span>
+          <span class="shortcut-label shortcut-label-count">
+            <span data-i18n="shortcutFavorites">Favorites</span><span class="shortcut-count" id="shortcut-favorite-count">0</span>
+          </span>
+          <span class="shortcut-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- script.js fills this card with the tip chosen for today's date. -->
+    <section class="daily-tip-section section-wrap" aria-labelledby="daily-tip-heading">
+      <article class="daily-tip-card">
+        <div class="daily-tip-content">
+          <p class="eyebrow" data-i18n="dailyTipEyebrow">A fresh idea for today</p>
+          <h2 id="daily-tip-heading" data-i18n="dailyTipTitle">A little tip for today</h2>
+          <h3 class="daily-tip-food" id="daily-tip-food"></h3>
+          <p class="daily-tip-copy" id="daily-tip-copy" aria-live="polite"></p>
+          <button class="button button-primary daily-tip-details" id="daily-tip-details" type="button">
+            <span data-i18n="dailyTipDetails">See details</span><span aria-hidden="true">→</span>
+          </button>
+        </div>
+        <div class="daily-tip-visual">
+          <span id="daily-tip-emoji" aria-hidden="true"></span>
+        </div>
+      </article>
+    </section>
+
+    <!-- These featured cards stay in a row and can be swiped on phones. -->
+    <section class="featured-section section-wrap" aria-labelledby="featured-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" data-i18n="featuredEyebrow">Fresh picks</p>
+          <h2 id="featured-title" data-i18n="featuredTitle">Featured foods</h2>
+        </div>
+        <p class="section-intro" data-i18n="featuredIntro">A few colorful favorites to get you started.</p>
+      </div>
+      <div class="featured-foods-grid" id="featured-foods-grid" aria-label="Featured fruits and vegetables" data-i18n-attr="aria-label:featuredAria"></div>
+    </section>
+
+    <!-- The matching foods and their season badges are filled from data.js. -->
+    <section class="in-season-section section-wrap" aria-labelledby="in-season-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" data-i18n="inSeasonEyebrow">At their best</p>
+          <h2 id="in-season-title" data-i18n="inSeasonTitle">In season now</h2>
+        </div>
+        <p class="section-intro" data-i18n="inSeasonIntro">Fresh picks that are in season this month.</p>
+      </div>
+      <div class="produce-grid in-season-grid" id="in-season-grid" aria-label="Foods in season now" data-i18n-attr="aria-label:inSeasonAria"></div>
+      <div class="in-season-empty" id="in-season-empty" hidden>
+        <span aria-hidden="true">🌱</span>
+        <p data-i18n="inSeasonEmpty">Nothing is listed as in season right now. Try browsing all the produce.</p>
       </div>
     </section>
 
