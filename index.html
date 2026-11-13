@@ -34,6 +34,15 @@
       <nav class="main-nav" aria-label="Main navigation" data-i18n-attr="aria-label:mainNavAria">
         <a href="#home" data-i18n="navHome">Home</a><a href="#browse" data-i18n="navBrowse">Browse</a><a href="#about" data-i18n="navAbout">About</a>
       </nav>
+      <!-- Choose a color theme for the produce cards. -->
+      <div class="card-style-control">
+        <label for="card-style-select" data-i18n="cardStyleLabel">Card style</label>
+        <select id="card-style-select" aria-label="Card style" data-i18n-attr="aria-label:cardStyleLabel">
+          <option value="pastel" data-i18n="stylePastel">Pastel</option>
+          <option value="tropical" data-i18n="styleTropical">Tropical</option>
+          <option value="minimal" data-i18n="styleMinimal">Minimal</option>
+        </select>
+      </div>
       <div class="header-actions">
         <div class="language-switch" role="group" aria-label="Choose language" data-i18n-attr="aria-label:languageLabel">
           <button type="button" lang="en" data-language="en" aria-pressed="true">English</button>
