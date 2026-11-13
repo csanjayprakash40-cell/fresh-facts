@@ -26,14 +26,14 @@
     <span class="background-shape shape-lime" data-depth="0.65"></span>
     <span class="background-shape shape-berry" data-depth="0.3"></span>
   </div>
-  <a class="skip-link" href="#main" data-i18n="skipLink">Skip to content</a>
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+  <div class="magic-announcement visually-hidden" id="magic-announcement" aria-live="polite"></div>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="#home" aria-label="Fresh Facts home" data-i18n-attr="aria-label:homeAria">
         <span class="brand-mark" aria-hidden="true">✳</span>
         <span>fresh<span class="brand-accent">facts</span></span>
       </a>
-      <a class="home-link" href="#home" data-i18n="navHome">Home</a>
       <nav class="main-nav" id="main-nav" aria-label="Main navigation" data-i18n-attr="aria-label:mainNavAria">
         <a href="#browse" data-i18n="navBrowse">Browse</a>
         <a class="favorites-link" href="#browse" id="favorites-toggle" aria-pressed="false">
@@ -41,31 +41,22 @@
           <span class="favorite-count" id="favorite-count">0</span>
         </a>
       </nav>
-      <!-- This button opens the navigation links on small screens. -->
-      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu" data-i18n-attr="aria-label:menuOpen">
-        <span aria-hidden="true">☰</span><span data-i18n="menuLabel">Menu</span>
-      </button>
       <div class="header-actions">
-        <div class="text-size-control" role="group" aria-label="Text size" data-i18n-attr="aria-label:textSizeLabel">
-          <span data-i18n="textSizeLabel">Text size</span>
-          <button type="button" data-text-size="small" aria-label="Smaller text" data-i18n-attr="aria-label:textSmaller">A-</button>
-          <button type="button" data-text-size="normal" aria-label="Regular text" data-i18n-attr="aria-label:textNormal">A</button>
-          <button type="button" data-text-size="large" aria-label="Larger text" data-i18n-attr="aria-label:textLarger">A+</button>
-        </div>
-        <button class="calm-toggle" id="calm-toggle" type="button" aria-pressed="false">
-          <span data-i18n="calmMode">Calm mode</span>: <span id="calm-mode-state" data-i18n="calmModeOff">Off</span>
-        </button>
         <div class="language-switch" role="group" aria-label="Choose language" data-i18n-attr="aria-label:languageLabel">
           <button type="button" lang="en" data-language="en" aria-pressed="true">English</button>
           <button type="button" lang="te" data-language="te" aria-pressed="false">తెలుగు</button>
         </div>
+        <button class="calm-toggle" id="calm-toggle" type="button" aria-pressed="false">
+          <span data-i18n="calmMode">Calm mode</span>
+          <span class="calm-mode-state" id="calm-mode-state" data-i18n="calmModeOff">Off</span>
+        </button>
         <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode">
-          <span aria-hidden="true">☾</span><span data-i18n="themeDarkText">Dark mode</span>
+          <span aria-hidden="true">☾</span>
         </button>
         <!-- The small header button opens the existing live search. -->
         <div class="header-search" id="header-search">
           <button class="icon-button search-toggle" id="search-toggle" type="button" aria-controls="search-popover" aria-expanded="false" aria-label="Open search" data-i18n-attr="aria-label:searchOpen">
-            <span aria-hidden="true">⌕</span><span data-i18n="searchLabelShort">Search</span>
+            <span aria-hidden="true">⌕</span>
           </button>
           <div class="search-popover" id="search-popover" role="region" aria-labelledby="search-label" hidden>
             <div class="search-popover-heading">
@@ -80,111 +71,50 @@
             <p data-i18n="searchHint">Search by name, nutrient, or benefit</p>
           </div>
         </div>
-        <!-- Keep the extra card-color choice tucked away until someone needs it. -->
-        <details class="card-style-control">
-          <summary data-i18n="cardStyleLabel">Card style</summary>
-          <label class="visually-hidden" for="card-style-select" data-i18n="cardStyleLabel">Card style</label>
+        <label class="card-style-control" for="card-style-select">
+          <span data-i18n="cardStyleLabel">Card style</span>
           <select id="card-style-select" aria-label="Card style" data-i18n-attr="aria-label:cardStyleLabel">
             <option value="pastel" data-i18n="stylePastel">Pastel</option>
             <option value="tropical" data-i18n="styleTropical">Tropical</option>
             <option value="minimal" data-i18n="styleMinimal">Minimal</option>
           </select>
-        </details>
+        </label>
       </div>
     </div>
   </header>
 
   <main id="main">
     <section class="hero section-wrap" id="home" aria-labelledby="hero-title">
+      <div class="hero-orbit" aria-hidden="true">
+        <span class="hero-produce hero-produce-orange">🍊</span>
+        <span class="hero-produce hero-produce-leaf">🥑</span>
+        <span class="hero-produce hero-produce-berry">🍓</span>
+        <span class="hero-produce hero-produce-carrot">🥕</span>
+      </div>
       <div class="hero-copy">
         <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="heroEyebrow">A little goodness, every day</span></p>
         <h1 id="hero-title"><span data-i18n="heroTitleLine1">Good things</span><br><span data-i18n="heroTitleLine2">grow </span><span data-i18n="heroTitleAccent">here.</span></h1>
         <p class="hero-description" data-i18n="heroDescription">A fresh look at the fruits and veggies that help you feel your best.</p>
+        <p class="friendly-greeting" id="friendly-greeting" aria-live="polite"></p>
         <a class="button button-primary hero-cta" href="#browse"><span data-i18n="heroCta">Browse all</span><span aria-hidden="true">→</span></a>
       </div>
       <div class="hero-features">
-        <div class="feature-tabs" role="tablist" aria-label="Fresh Facts features" data-i18n-attr="aria-label:featureTabsAria">
-          <button class="feature-tab" id="feature-tab-goals" type="button" role="tab" aria-controls="feature-panel-goals" aria-selected="true" tabindex="0" data-feature-tab="goals" data-i18n="tabGoals">What do you need?</button>
-          <button class="feature-tab" id="feature-tab-food-day" type="button" role="tab" aria-controls="feature-panel-food-day" aria-selected="false" tabindex="-1" data-feature-tab="food-day" data-i18n="tabFoodDay">Food of the day</button>
-          <button class="feature-tab" id="feature-tab-plate" type="button" role="tab" aria-controls="feature-panel-plate" aria-selected="false" tabindex="-1" data-feature-tab="plate" data-i18n="tabBuildPlate">Build my plate</button>
+        <div class="goal-picker">
+          <h2 id="goal-picker-title" data-i18n="goalPickerTitle">What do you need?</h2>
+          <div class="goal-picker-options" role="group" aria-labelledby="goal-picker-title">
+            <button class="goal-button" type="button" data-goal="Eyes" aria-pressed="false"><span aria-hidden="true">◉</span><span data-i18n="goalEyes">Eyes</span></button>
+            <button class="goal-button" type="button" data-goal="Heart" aria-pressed="false"><span aria-hidden="true">♡</span><span data-i18n="goalHeart">Heart</span></button>
+            <button class="goal-button" type="button" data-goal="Skin" aria-pressed="false"><span aria-hidden="true">✦</span><span data-i18n="goalSkin">Skin</span></button>
+            <button class="goal-button" type="button" data-goal="Energy" aria-pressed="false"><span aria-hidden="true">⚡</span><span data-i18n="goalEnergy">Energy</span></button>
+            <button class="goal-button" type="button" data-goal="Immunity" aria-pressed="false"><span aria-hidden="true">✚</span><span data-i18n="goalImmunity">Immunity</span></button>
+            <button class="goal-button" type="button" data-goal="Bones" aria-pressed="false"><span aria-hidden="true">⌁</span><span data-i18n="goalBones">Bones</span></button>
+          </div>
         </div>
-
-        <section class="feature-panel" id="feature-panel-goals" role="tabpanel" aria-labelledby="feature-tab-goals" data-feature-panel="goals">
-          <div class="goal-picker">
-            <h2 id="goal-picker-title" data-i18n="goalPickerTitle">Choose a goal to find foods that may help.</h2>
-            <div class="goal-picker-options" role="group" aria-labelledby="goal-picker-title">
-              <button class="goal-button" type="button" data-goal="HeartHealth" aria-pressed="false"><span aria-hidden="true">♡</span><span data-i18n="goalHeartHealth">Heart health</span></button>
-              <button class="goal-button" type="button" data-goal="BloodSugarBalance" aria-pressed="false"><span aria-hidden="true">◉</span><span data-i18n="goalBloodSugar">Blood sugar balance</span></button>
-              <button class="goal-button" type="button" data-goal="BonesJoints" aria-pressed="false"><span aria-hidden="true">⌁</span><span data-i18n="goalBonesJoints">Strong bones and joints</span></button>
-              <button class="goal-button" type="button" data-goal="EyeHealth" aria-pressed="false"><span aria-hidden="true">◉</span><span data-i18n="goalEyeHealth">Eye health</span></button>
-              <button class="goal-button" type="button" data-goal="Digestion" aria-pressed="false"><span aria-hidden="true">↗</span><span data-i18n="goalDigestion">Digestion</span></button>
-              <button class="goal-button" type="button" data-goal="Energy" aria-pressed="false"><span aria-hidden="true">⚡</span><span data-i18n="goalEnergy">Energy and tiredness</span></button>
-              <button class="goal-button" type="button" data-goal="HealthyWeight" aria-pressed="false"><span aria-hidden="true">◌</span><span data-i18n="goalHealthyWeight">Healthy weight</span></button>
-              <button class="goal-button" type="button" data-goal="BloodPressure" aria-pressed="false"><span aria-hidden="true">♡</span><span data-i18n="goalBloodPressure">Blood pressure</span></button>
-            </div>
-          </div>
-          <div class="goal-results" id="goal-results" hidden>
-            <h3 class="goal-results-title" id="goal-results-title"></h3>
-            <div class="produce-grid goal-results-grid" id="goal-results-grid" aria-live="polite"></div>
-            <p class="goal-empty" id="goal-empty" data-i18n="goalEmpty" hidden>No foods are listed for this goal yet. Try another goal.</p>
-          </div>
-        </section>
-
-        <section class="feature-panel" id="feature-panel-food-day" role="tabpanel" aria-labelledby="feature-tab-food-day" data-feature-panel="food-day" hidden>
-          <article class="food-day-card">
-            <div class="food-day-content">
-              <p class="eyebrow" data-i18n="foodDayEyebrow">A fresh pick for today</p>
-              <h2 class="food-day-name" id="food-day-name"></h2>
-              <h3 data-i18n="foodDayBenefits">Top 3 benefits</h3>
-              <ul class="food-day-benefits" id="food-day-benefits"></ul>
-              <p class="food-day-season"><strong data-i18n="foodDaySeasonLabel">Best season</strong><span id="food-day-season"></span></p>
-              <button class="button button-primary" id="food-day-details" type="button">
-                <span data-i18n="foodDayDetails">See details</span><span aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="food-day-visual"><span id="food-day-emoji" aria-hidden="true"></span></div>
-          </article>
-        </section>
-
-        <section class="feature-panel plate-panel" id="feature-panel-plate" role="tabpanel" aria-labelledby="feature-tab-plate" data-feature-panel="plate" hidden>
-          <p class="feature-intro" data-i18n="plateIntro">Choose up to 6 foods to build your plate.</p>
-          <div class="plate-layout">
-            <section class="plate-picker" aria-labelledby="plate-picker-title">
-              <h2 id="plate-picker-title" data-i18n="plateChooseFoods">Choose foods</h2>
-              <p class="plate-count" id="plate-count" aria-live="polite"></p>
-              <div class="plate-food-grid" id="plate-food-grid" role="group" aria-label="Choose foods for your plate" data-i18n-attr="aria-label:plateFoodPickerAria"></div>
-            </section>
-            <section class="plate-summary" aria-labelledby="plate-summary-title">
-              <div class="plate-summary-heading">
-                <h2 id="plate-summary-title" data-i18n="plateSummaryTitle">Your plate</h2>
-                <button class="button button-secondary plate-clear" id="plate-clear" type="button" data-i18n="plateClear">Clear plate</button>
-              </div>
-              <p class="plate-empty" id="plate-empty" data-i18n="plateEmpty">Pick a few foods to see their combined benefits.</p>
-              <ul class="plate-selected-list" id="plate-selected-list"></ul>
-              <p class="plate-limit" id="plate-limit" data-i18n="plateLimit" hidden>You can add up to 6 foods.</p>
-              <section class="plate-summary-block">
-                <h3 data-i18n="plateBenefitsTitle">Benefits by goal</h3>
-                <div class="plate-benefit-groups" id="plate-benefit-groups"></div>
-              </section>
-              <section class="plate-summary-block">
-                <h3 data-i18n="plateVitaminsTitle">Vitamins and minerals covered</h3>
-                <ul class="plate-pill-list" id="plate-vitamins"></ul>
-              </section>
-              <section class="plate-summary-block">
-                <h3 data-i18n="plateMissingTitle">Goals still missing</h3>
-                <p class="plate-all-goals" id="plate-all-goals" data-i18n="plateAllGoals" hidden>Your plate covers every goal.</p>
-                <ul class="plate-missing-list" id="plate-missing-goals"></ul>
-              </section>
-              <section class="plate-summary-block">
-                <h3 data-i18n="plateSuggestionsTitle">Two foods to consider</h3>
-                <p data-i18n="plateSuggestionsIntro">These picks can help cover more of your missing goals.</p>
-                <div class="plate-suggestions" id="plate-suggestions"></div>
-                <p class="plate-suggestions-empty" id="plate-suggestions-empty" data-i18n="plateSuggestionsEmpty" hidden>Your plate already covers all the listed goals.</p>
-                <p class="plate-suggestions-empty" id="plate-no-suggestions" data-i18n="plateNoSuggestions" hidden>No more matching foods are available to suggest.</p>
-              </section>
-            </section>
-          </div>
-        </section>
+        <div class="goal-results" id="goal-results" hidden>
+          <h3 class="goal-results-title" id="goal-results-title"></h3>
+          <div class="produce-grid goal-results-grid" id="goal-results-grid"></div>
+          <p class="goal-empty" id="goal-empty" data-i18n="goalEmpty" hidden>No foods match this goal yet.</p>
+        </div>
       </div>
     </section>
 
@@ -281,19 +211,17 @@
       </div>
       <div class="benefit-filters" role="group" aria-label="Filter by benefit" data-i18n-attr="aria-label:benefitFilterAria">
         <span data-i18n="benefitPrompt">I'm looking for</span>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="HeartHealth" aria-pressed="false"><span aria-hidden="true">♡</span> <span data-i18n="goalHeartHealth">Heart health</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="BloodSugarBalance" aria-pressed="false"><span aria-hidden="true">◉</span> <span data-i18n="goalBloodSugar">Blood sugar balance</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="BonesJoints" aria-pressed="false"><span aria-hidden="true">⌁</span> <span data-i18n="goalBonesJoints">Strong bones and joints</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="EyeHealth" aria-pressed="false"><span aria-hidden="true">◉</span> <span data-i18n="goalEyeHealth">Eye health</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Digestion" aria-pressed="false"><span aria-hidden="true">↗</span> <span data-i18n="goalDigestion">Digestion</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Energy" aria-pressed="false"><span aria-hidden="true">⚡</span> <span data-i18n="goalEnergy">Energy and tiredness</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="HealthyWeight" aria-pressed="false"><span aria-hidden="true">◌</span> <span data-i18n="goalHealthyWeight">Healthy weight</span></button>
-        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="BloodPressure" aria-pressed="false"><span aria-hidden="true">♡</span> <span data-i18n="goalBloodPressure">Blood pressure</span></button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Heart" aria-pressed="false"><span aria-hidden="true">♡</span> <span data-i18n="benefitHeart">Heart</span></button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Eyes" aria-pressed="false"><span aria-hidden="true">◉</span> <span data-i18n="benefitEyes">Eyes</span></button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Skin" aria-pressed="false"><span aria-hidden="true">✦</span> <span data-i18n="benefitSkin">Skin</span></button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Immunity" aria-pressed="false"><span aria-hidden="true">✚</span> <span data-i18n="benefitImmunity">Immunity</span></button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Bones" aria-pressed="false"><span aria-hidden="true">⌁</span> <span data-i18n="benefitBones">Bones</span></button>
+        <button class="benefit-chip" type="button" data-filter-type="benefit" data-filter-value="Digestion" aria-pressed="false"><span aria-hidden="true">↗</span> <span data-i18n="benefitDigestion">Digestion</span></button>
       </div>
       <div class="produce-grid" id="produce-grid" aria-live="polite"></div>
       <div class="empty-state" id="empty-state" hidden>
-        <span aria-hidden="true">🧺</span><h3 data-i18n="emptyTitle">No produce found just yet</h3>
-        <p data-i18n="emptyText">Try another search or clear your filters.</p>
+        <span class="empty-illustration" id="empty-illustration" aria-hidden="true">🧺</span><h3 id="empty-title" data-i18n="emptyTitle">No produce found just yet</h3>
+        <p id="empty-text" data-i18n="emptyText">Try another search or clear your filters.</p>
         <button class="button button-secondary" id="clear-filters" type="button" data-i18n="clearFilters">Show all produce</button>
       </div>
     </section>
@@ -305,9 +233,9 @@
           <p class="eyebrow" data-i18n="aboutEyebrow">A note from our little garden</p>
           <h2 id="about-title"><span data-i18n="aboutTitleLead">Good food info,</span><br><span data-i18n="aboutTitleAccent">without the fuss.</span></h2>
           <p data-i18n="aboutText">Fresh Facts makes it easier to get curious about what’s on your plate. Explore everyday produce, learn about its nutrients, and find simple ways to enjoy more variety.</p>
-          <p class="medical-note"><strong data-i18n="medicalDisclaimer">This is general information, not medical advice</strong></p>
         </div>
         <div class="about-doodle" aria-hidden="true">🍋<span>🥦</span>🍓</div>
+        <p class="about-thanks" data-i18n="aboutThanks">Thank you for caring about your health!</p>
       </div>
     </section>
   </main>
@@ -315,7 +243,6 @@
     <div class="footer-inner section-wrap">
       <a class="brand footer-brand" href="#home"><span class="brand-mark" aria-hidden="true">✳</span><span>fresh<span class="brand-accent">facts</span></span></a>
       <p data-i18n="footerMade">Made for curious eaters, everywhere.</p>
-      <p class="footer-disclaimer"><span data-i18n="medicalDisclaimer">This is general information, not medical advice</span>. <span data-i18n="footerSources">Food information comes from USDA FoodData Central and NIH nutrition resources.</span></p>
       <a class="back-to-top" href="#home" data-i18n="backToTop">Back to top ↑</a>
     </div>
   </footer>
